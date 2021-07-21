@@ -1,5 +1,5 @@
-Welcome to eth-ape's documentation!
-===================================
+Welcome to Ape's documentation!
+===============================
 
 .. toctree::
    :maxdepth: 2
