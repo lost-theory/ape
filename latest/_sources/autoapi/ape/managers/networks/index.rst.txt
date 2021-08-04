@@ -1,0 +1,95 @@
+:mod:`ape.managers.networks`
+============================
+
+.. py:module:: ape.managers.networks
+
+
+
+
+.. raw:: html
+
+   <h3>Module Contents</h3>
+
+**Classes**:
+
+.. autoapisummary::
+
+   ape.managers.networks.NetworkManager
+
+
+
+
+
+-----------
+
+
+.. py:class:: NetworkManager
+
+   The set of all blockchain network ecosystems that Ape has registered through its plugin system.
+
+   You can access a network via the following::
+
+       chain: ProviderAPI = networks.<ecosystem-name>.<chain-name>.use_provider(<provider-name>)
+
+   e.g.::
+
+       eth_mainnet = networks.ethereum.mainnet.use_provider("http://localhost:8545")
+       bsc_mainnet = networks.binance.mainnet.use_provider("infura")
+       optimism = networks.ethereum.optimism  # use default provider
+       zksync = networks.ethereum.zksync
+
+   When there are multiple providers in use, you must specify which network to
+   work with (see :class:`ape.api.networks.ProviderContextManager`,
+   :py:meth:`ape.api.networks.NetworkAPI.use_provider`, etc.)
+
+   .. attribute:: config
+      :annotation: :ape.managers.config.ConfigManager
+
+      
+
+   .. attribute:: plugin_manager
+      :annotation: :pluggy.PluginManager
+
+      
+
+   .. attribute:: active_provider
+      :annotation: :Optional[ape.api.ProviderAPI]
+
+      
+
+   .. attribute:: _default
+      :annotation: :Optional[str]
+
+      
+
+   .. py:method:: ecosystems(self) -> Dict[str, ape.api.EcosystemAPI]
+
+
+   .. py:method:: __iter__(self) -> Iterator[str]
+
+
+   .. py:method:: __getitem__(self, ecosystem_name: str) -> ape.api.EcosystemAPI
+
+
+   .. py:method:: __getattr__(self, attr_name: str) -> ape.api.EcosystemAPI
+
+
+   .. py:method:: network_choices(self) -> Iterator[str]
+      :property:
+
+      Produce the set of all possible network choices that could be provided
+      for a "network selection" choice e.g. `--network [ECOSYSTEM:NETWORK:PROVIDER]`
+
+
+   .. py:method:: parse_network_choice(self, network_choice: Optional[str] = None) -> ape.api.ProviderContextManager
+
+
+   .. py:method:: default_ecosystem(self) -> ape.api.EcosystemAPI
+      :property:
+
+
+   .. py:method:: set_default_ecosystem(self, ecosystem_name: str)
+
+
+
+
