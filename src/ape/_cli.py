@@ -6,8 +6,10 @@ except ImportError:
     import importlib_metadata as metadata  # type: ignore
 
 import click
+import click_logging
 import yaml
 
+from ape.logging import logger
 from ape.plugins import clean_plugin_name
 from ape.utils import notify
 
@@ -50,13 +52,14 @@ class ApeCLI(click.MultiCommand):
         if name in self.commands:
             try:
                 return self.commands[name]()
-            except Exception:
-                notify("WARNING", f"Error loading cli endpoint for plugin 'ape_{name}'")
+            except Exception as exc:
+                notify("WARNING", f"Error loading cli endpoint for plugin 'ape_{name}': {exc!r}")
 
         # NOTE: don't return anything so Click displays proper error
 
 
 @click.command(cls=ApeCLI, context_settings=dict(help_option_names=["-h", "--help"]))
+@click_logging.simple_verbosity_option(logger)
 @click.version_option(message="%(version)s", package_name="eth-ape")
 @click.option(
     "--config",

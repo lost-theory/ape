@@ -2,13 +2,16 @@ from itertools import chain
 from pathlib import Path
 
 import click
+import click_logging
 
+from ape.logging import logger
 from ape.utils import notify
 
 flatten = chain.from_iterable
 
 
 @click.command(short_help="Compile select contract source files")
+@click_logging.simple_verbosity_option(logger)
 @click.argument(
     "filepaths",
     nargs=-1,

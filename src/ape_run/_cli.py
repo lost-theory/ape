@@ -1,10 +1,13 @@
+import logging
 import sys
 from importlib import import_module
 from pathlib import Path
 
 import click
+import click_logging
 
 from ape import config, networks
+from ape.logging import logger
 from ape.utils import Abort, get_relative_path
 from ape_console._cli import NetworkChoice, console
 
@@ -53,14 +56,8 @@ def _run_script(script_path, interactive=False, verbose=False):
 
 
 @click.command(short_help="Run scripts from the `scripts` folder")
+@click_logging.simple_verbosity_option(logger)
 @click.argument("scripts", nargs=-1)
-@click.option(
-    "-v",
-    "--verbose",
-    is_flag=True,
-    default=False,
-    help="Display errors from scripts",
-)
 @click.option(
     "-i",
     "--interactive",
@@ -76,7 +73,7 @@ def _run_script(script_path, interactive=False, verbose=False):
     show_default=True,
     show_choices=False,
 )
-def cli(scripts, verbose, interactive, network):
+def cli(scripts, interactive, network):
     """
     NAME - Path or script name (from ``scripts/`` folder)
 
@@ -86,6 +83,7 @@ def cli(scripts, verbose, interactive, network):
     will be injected dynamically during script execution. The dynamically injected objects are
     the exports from the ``ape`` top-level package (similar to how the console works)
     """
+    verbose = logger.level <= logging.DEBUG
     if not scripts:
         raise Abort("Must provide at least one script name or path")
 

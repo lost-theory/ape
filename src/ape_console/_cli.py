@@ -1,10 +1,13 @@
 import faulthandler
+import logging
 
 import click
+import click_logging
 import IPython  # type: ignore
 
 from ape import networks
 from ape import project as default_project
+from ape.logging import logger
 from ape.version import version as ape_version  # type: ignore
 
 
@@ -18,8 +21,11 @@ class NetworkChoice(click.Choice):
         return "[ecosystem-name][:[network-name][:[provider-name]]]"
 
 
+# @click.option("--verbose", is_flag=True, flag_value=True, default=False)
+
+
 @click.command(short_help="Load the console", context_settings=dict(ignore_unknown_options=True))
-@click.option("--verbose", is_flag=True, flag_value=True, default=False)
+@click_logging.simple_verbosity_option(logger)
 @click.option(
     "--network",
     type=NetworkChoice(case_sensitive=False),
@@ -28,10 +34,11 @@ class NetworkChoice(click.Choice):
     show_default=True,
     show_choices=False,
 )
-def cli(verbose, network):
+def cli(network):
     """
     Opens a console for the local project."""
 
+    verbose = logger.level <= logging.DEBUG
     with networks.parse_network_choice(network):
         return console(verbose=verbose)
 
